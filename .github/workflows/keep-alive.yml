@@ -2,8 +2,8 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: "0 12 */2 * *"
-  workflow_dispatch:
+    - cron: "0 12 */2 * *"   # cada 2 días, 7am Panamá
+  workflow_dispatch:          # botón para probar a mano
 
 jobs:
   ping:
@@ -11,6 +11,6 @@ jobs:
     steps:
       - name: Consultar la base
         run: |
-          curl -sf "${{ secrets.SUPABASE_URL }}/rest/v1/keep_alive?select=id&limit=1" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
+          curl -sf --retry 3 --max-time 30 \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/keep_alive?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}"
